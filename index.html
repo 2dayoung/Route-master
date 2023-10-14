@@ -35,13 +35,26 @@ var map = new naver.maps.Map(mapDiv);
 <script>
   var map = new naver.maps.Map('map', {
     center: new naver.maps.LatLng(36.629449717767436,127.45769316147752),
-    zoom: 14
+    zoom: 12
   });
+  var coordinate = [
+    '127.4633636,36.6289331',
+    '127.4601003,36.6321194',
+    '127.4641923,36.6259632',
+    '127.4625906,36.6341946',
+    '127.4654529,36.6314208'
+   ];
+  // 반복문을 사용하여 좌표를 지도에 마커로 표시
+  for (var i = 0; i < coordinate.length; i++) {
+      var coordinates = coordinate[i].split(',');
+      var lat = parseFloat(coordinates[1]);
+      var lng = parseFloat(coordinates[0]);
 
-  var marker = new naver.maps.Marker({
-    position: new naver.maps.LatLng(36.629449717767436,127.45769316147752),
-    map: map
-  });
+      var marker = new naver.maps.Marker({
+          position: new naver.maps.LatLng(lat, lng),
+          map: map
+      });
+  }
 </script>
 
 </body>
