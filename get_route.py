@@ -1,38 +1,40 @@
+import sys
 import itertools
 
 # 주어진 인접 행렬
 graph = [
-    [float('inf'), 160.112, 102.311, 181.82, 84.446],
-    [160.112, float('inf'), 188.688, 201.359, 186.535],
-    [102.311, 188.688, float('inf'), 214.102, 157.644],
-    [181.82, 201.359, 214.102, float('inf'), 295.018],
-    [84.446, 186.535, 157.644, 295.018, float('inf')]
+    [0, 0, 0, 0, 0, 0],
+    [0, float('inf'), 845, 441, 976, 462],
+    [0, 845, float('inf'), 1035, 898, 663],
+    [0, 441, 1035, float('inf'), 1311, 798],
+    [0, 976, 898, 1311, float('inf'), 959],
+    [0, 462, 663, 798, 959, float('inf')]
 ]
 
-# 모든 노드의 순서 생성
+# 모든 노드의 순서 생성 (0번 노드를 제외한 나머지 노드 순열)
 num_nodes = len(graph)
-node_indices = range(num_nodes)
+node_indices = range(1, num_nodes)
 permutations = itertools.permutations(node_indices)
 
 # 초기값 설정
 shortest_distance = float('inf')
 shortest_path = None
 
-# 모든 순서에 대해 최단 경로 찾기
+# 0번 노드에서 시작하는 모든 순열에 대해 최단 경로 찾기
 for perm in permutations:
     total_distance = 0
-    prev_node = perm[0]
+    prev_node = 0
 
-    for node in perm[1:]:
+    for node in perm:
         total_distance += graph[prev_node][node]
         prev_node = node
 
-    # 마지막 노드에서 출발 노드로 돌아가는 거리 추가
-    total_distance += graph[prev_node][perm[0]]
+    # # 마지막 노드에서 0번 노드로 돌아가는 거리 추가
+    # total_distance += graph[prev_node][0]
 
     if total_distance < shortest_distance:
         shortest_distance = total_distance
-        shortest_path = perm
+        shortest_path = perm 
 
 # 결과 출력
 print(f"최단 거리: {shortest_distance}")
