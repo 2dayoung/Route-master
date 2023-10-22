@@ -1,6 +1,10 @@
-import itertools
+import numpy as np
 
-# 주어진 인접 행렬
+# # 50개의 도시 간의 인접 행렬 예시 (임의의 값 사용)
+# num_cities = 20
+# np.random.seed(0)
+# graph = np.random.randint(100, 1000, size=(num_cities, num_cities))
+# np.fill_diagonal(graph, 0)  # 대각선 상의 값은 0으로 설정
 graph = [
     [float('inf'), 845, 441, 976, 462],
     [845, float('inf'), 1035, 898, 663],
@@ -9,31 +13,41 @@ graph = [
     [462, 663, 798, 959, float('inf')]
 ]
 
-# 모든 노드의 순서 생성
-num_nodes = len(graph)
-node_indices = range(num_nodes)
-permutations = itertools.permutations(node_indices)
 
-# 초기값 설정
-shortest_distance = float('inf')
-shortest_path = None
+def lin_kernighan(graph):
+    num_nodes = len(graph)
+    best_tour = None
+    best_length = float('inf')
 
-# 모든 순서에 대해 최단 경로 찾기
-for perm in permutations:
-    total_distance = 0
-    prev_node = perm[0]
+    for start_node in range(num_nodes):
+        tour = [start_node]
+        unused_nodes = set(range(num_nodes))
+        unused_nodes.remove(start_node)
+        tour_length = 0
 
-    for node in perm[1:]:
-        total_distance += graph[prev_node][node]
-        prev_node = node
+        while unused_nodes:
+            current_node = tour[-1]
+            min_gain = float('inf')
+            next_node = -1
 
-    # 마지막 노드에서 출발 노드로 돌아가는 거리 추가
-    total_distance += graph[prev_node][perm[0]]
+            for node in unused_nodes:
+                gain = graph[current_node][node]
+                if gain < min_gain:
+                    min_gain = gain
+                    next_node = node
 
-    if total_distance < shortest_distance:
-        shortest_distance = total_distance
-        shortest_path = perm
+            tour_length += min_gain
+            tour.append(next_node)
+            unused_nodes.remove(next_node)
 
-# 결과 출력
-print(f"최단 거리: {shortest_distance}")
-print(f"최단 경로: {shortest_path}")
+        # Check if the tour is better than the best tour found so far
+        if tour_length < best_length:
+            best_tour = tour
+            best_length = tour_length
+
+    return best_length, best_tour
+
+# Lin-Kernighan 알고리즘을 사용하여 최단 경로 찾기
+shortest_length, shortest_tour = lin_kernighan(graph)
+print(f"Shortest Length: {shortest_length}")
+print(f"Shortest Tour: {shortest_tour}")
