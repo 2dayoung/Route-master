@@ -1,21 +1,23 @@
-def count (A, n):
+import direct_test
+
+def count(A, n):
     count = 0
     for i in range(n):
         if ((A & (1 << i)) != 0):
             count += 1
     return count
 
-def isIn (i, A):
+def isIn(i, A):
     if ((A & (1 << (i - 2))) != 0):
         return True
     else:
         return False
 
-def diff (A, j):
+def diff(A, j):
     t = 1 << (j - 2)
     return (A & (~t))
 
-def minimum (W, D, i, A):
+def minimum(W, D, i, A):
     minValue = INF
     minJ = 1
     n = len(W) - 1
@@ -27,7 +29,7 @@ def minimum (W, D, i, A):
                 minJ = j
     return minValue, minJ
 
-def travel (W):
+def travel(W):
     n = len(W) - 1
     size = 2 ** (n - 1)
     D = [[0] * size for _ in range(n + 1)]
@@ -44,14 +46,18 @@ def travel (W):
     D[1][A], P[1][A] = minimum(W, D, 1, A)
     return D, P
 
-INF = 99
-W=[ [-1, -1, -1, -1, -1, -1],
-    [-1,0, 0.845, 0.441, 0.976, 0.462],
-    [-1,0.845, 0, 0.1035, 0.898, 0.663],
-    [-1,0.441, 0.1035, 0, 0.1311, 0.798],
-    [-1,0.976, 0.898, 0.1311, 0, 0.959],
-    [-1,0.462, 0.663, 0.798, 0.959, 0],
-]
+def find_path(P, start, end, A):
+    path = [start]
+    while A != 0:
+        j = P[start][A]
+        path.append(j)
+        A = diff(A, j)
+        start = j
+    return path
+
+INF = 100000000
+W= direct_test.make_adjlist()
+
 
 D, P = travel(W)
 print('D =')
@@ -60,4 +66,7 @@ for i in range(1, len(D)):
 print('P =')
 for i in range(1, len(P)):
     print(P[i])
-print('minlength =', D[1][2**(len(W)-2)-1])    
+print('minlength =', D[1][2 ** (len(W) - 2) - 1])
+
+min_path = find_path(P, 1, 1, 2 ** (len(W) - 2) - 1)
+print('min_path =', min_path)
